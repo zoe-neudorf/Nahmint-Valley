@@ -10,57 +10,6 @@
 	body { margin: 0; padding: 0; }
 	#map { position: absolute; top: 0; bottom: 0; width: 100%; }
 
-	/* Welcome card — position top-right */
-	#map-welcome-card {
-		position: absolute;
-		top: 16px;
-		right: 16px;
-		z-index: 10;
-		width: 300px;
-	}
-
-	/* Welcome card minimized — hide body and footer, shrink to header width */
-	#map-welcome-card.is-minimized .map-card-body,
-	#map-welcome-card.is-minimized .map-card-footer {
-		display: none;
-	}
-	#map-welcome-card.is-minimized {
-		width: auto;
-	}
-
-	/* Legend minimized — collapse to a vertical tab pinned to the right edge */
-	#map-legend.is-minimized {
-		width: auto;
-		bottom: auto;
-		right: 0;
-		left: auto;
-		top: 50%;
-		transform: translateY(-50%);
-		border-radius: 8px 0 0 8px;
-		cursor: pointer;
-	}
-
-	#map-legend.is-minimized .map-card-body {
-		display: none;
-	}
-
-	#map-legend.is-minimized .map-card-header {
-		flex-direction: column;
-		writing-mode: vertical-rl;
-		text-orientation: mixed;
-		padding: 16px 10px;
-		gap: 8px;
-		cursor: pointer;
-	}
-
-	#map-legend.is-minimized .map-card-title {
-		transform: rotate(180deg);
-	}
-
-	#map-legend.is-minimized #legend-minimize-btn {
-		display: none;
-	}
-
 	/* ── Legend panel ── */
 	#legend {
 		position: absolute;
