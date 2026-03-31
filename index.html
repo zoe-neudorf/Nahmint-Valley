@@ -4,17 +4,54 @@
 <meta charset="utf-8">
 <title>Guides</title>
 <meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no">
+<link rel="stylesheet" href="Mapbox/map-ui.css" /> 
 <link href="https://api.mapbox.com/mapbox-gl-js/v3.19.0/mapbox-gl.css" rel="stylesheet">
 <script src="https://api.mapbox.com/mapbox-gl-js/v3.19.0/mapbox-gl.js"></script>
 <style>
 	body { margin: 0; padding: 0; }
 	#map { position: absolute; top: 0; bottom: 0; width: 100%; }
 
+		/* Welcome card — position top-right */
+		#map-welcome-card {
+			position: absolute;
+			top: 16px;
+			right: 16px;
+			z-index: 10;
+			width: 300px;
+		}
+
+		/* Welcome card minimized — hide body and footer, shrink to header width */
+		#map-welcome-card.is-minimized .map-card-body,
+		#map-welcome-card.is-minimized .map-card-footer {
+			display: none;
+		}
+		#map-welcome-card.is-minimized {
+			width: auto;
+		}
+
+		/* Legend minimized — collapse to a vertical tab pinned to the right edge */
+		#map-legend.is-minimized {
+			width: auto;
+			bottom: auto;
+			right: 0;          /* flush against the right edge of the map */
+			left: auto;
+			top: 50%;
+			transform: translateY(-50%);
+			border-radius: 8px 0 0 8px;  /* flat on the right, rounded on the left */
+			cursor: pointer;
+		}
+
+		/* Hide the layer rows and footer when minimized */
+		#map-legend.is-minimized .map-card-body {
+			display: none;
+		}
+
+
 	/* ── Legend panel ── */
 	#legend {
 		position: absolute;
 		bottom: 30px;
-		left: 16px;
+		right: 16px;
 		background: rgba(20, 20, 20, 0.88);
 		color: #fff;
 		padding: 14px 16px;
@@ -184,6 +221,7 @@
 		style: 'mapbox://styles/mapbox/satellite-v9'
 	});
 
+	map.setProjection('globe')
 	// ── style.load: fog, terrain, and all GeoJSON layers ──
 	map.on('style.load', () => {
 
@@ -199,63 +237,84 @@
 		});
 		map.setTerrain({ source: 'mapbox-dem', exaggeration: 1.25 });
 
-		// ── Future Cutblocks ──
-		map.addSource('future_blocks', {
+		// ── Critical Habitat ──
+		map.addSource('Critical_Habitat', {
 			type: 'geojson',
-			data: 'Mapbox/Merged_Future_Cutblocks.geojson',
+			data: 'Mapbox/Critical_Habitat.geojson'
+		});
+
+		map.addLayer({
+			id: 'Critical_Habitat-fill',
+			type: 'fill',
+			source: 'Critical_Habitat',
+			paint: { 'fill-color': 'darkblue', 'fill-opacity': 0.5 },
+			layout: { 'visibility': 'none' }
+		});
+
+				// ── VRI <100 Years ──
+		map.addSource('VRI_100', {
+			type: 'geojson',
+			data: 'Mapbox/VRI_up_to_100.geojson',
 			generateId: true
 		});
 
 		map.addLayer({
-			id: 'future_blocks-fill',
+			id: 'VRI_100-fill',
 			type: 'fill',
-			source: 'future_blocks',
-			paint: { 'fill-color': '#D62728', 'fill-opacity': 0.45 }
+			source: 'VRI_100',
+			paint: { 
+				'fill-color': 'yellow', 
+				'fill-opacity': 0.5 },
+			layout: { 'visibility': 'none' }
 		});
 
 		map.addLayer({
-			id: 'future_blocks-outline',
+			id: 'VRI_100-outline',
 			type: 'line',
-			source: 'future_blocks',
-			paint: { 'line-color': '#FF1F00', 'line-width': 1.2, 'line-opacity': 0.9 }
+			source: 'VRI_100',
+			paint: { 
+				'line-color': 'yellow', 
+				'line-width': 1.2, 
+				'line-opacity': 0.9 },
+			layout: { 'visibility': 'none' }
 		});
 
 		map.addLayer({
-			id: 'future_blocks-hover',
+			id: 'VRI_100-hover',
 			type: 'fill',
-			source: 'future_blocks',
+			source: 'VRI_100',
 			paint: {
-				'fill-color': '#D62728',
+				'fill-color': 'yellow',
 				'fill-opacity': [
 					'case', ['boolean', ['feature-state', 'hover'], false], 0.15, 0
 				]
 			}
 		});
 
-		let hoveredId3 = null;
+		let hoveredId4 = null;
 
-		map.on('mousemove', 'future_blocks-fill', (e) => {
+		map.on('mousemove', 'VRI_100-fill', (e) => {
 			map.getCanvas().style.cursor = 'pointer';
 			if (e.features.length > 0) {
-				if (hoveredId3 !== null) {
-					map.setFeatureState({ source: 'future_blocks', id: hoveredId3 }, { hover: false });
+				if (hoveredId4 !== null) {
+					map.setFeatureState({ source: 'VRI_100', id: hoveredId4 }, { hover: false });
 				}
-				hoveredId3 = e.features[0].id;
-				map.setFeatureState({ source: 'future_blocks', id: hoveredId3 }, { hover: true });
+				hoveredId4 = e.features[0].id;
+				map.setFeatureState({ source: 'VRI_100', id: hoveredId4 }, { hover: true });
 			}
 		});
 
-		map.on('mouseleave', 'future_blocks-fill', () => {
+		map.on('mouseleave', 'VRI_100-fill', () => {
 			map.getCanvas().style.cursor = '';
-			if (hoveredId3 !== null) {
-				map.setFeatureState({ source: 'future_blocks', id: hoveredId3 }, { hover: false });
+			if (hoveredId4 !== null) {
+				map.setFeatureState({ source: 'VRI_100', id: hoveredId4 }, { hover: false });
 			}
-			hoveredId3 = null;
+			hoveredId4 = null;
 		});
 
-		const popup2 = new mapboxgl.Popup({ closeButton: true, maxWidth: '450px' });
+		const popup3 = new mapboxgl.Popup({ closeButton: true, maxWidth: '450px' });
 
-		map.on('click', 'future_blocks-fill', (e) => {
+		map.on('click', 'VRI_100-fill', (e) => {
 			const props = e.features[0].properties;
 			const row = (label, key) => {
 				const val = props[key];
@@ -266,18 +325,16 @@
 						</tr>`;
 			};
 			const html = `
-				<div class="popup-header"><span class="popup-header-title">Proposed Cutblock Detail</span></div>
+				<div class="popup-header"><span class="popup-header-title">Vegetation Resource Inventory</span></div>
 				<div class="popup-body">
 					<table style="border-collapse:collapse;width:100%;font-size:11px;font-family:var(--font-mono)">
-						${row('BLOCK ID', 'BLOCK_ID')}
-						${row('LICENSE ID', 'LICENSE_ID')}
-						${row('STATUS', 'LIFECYCLE_')}
-						${row('FSP HOLDER', 'FSP_HOLDER')}
-						${row('PLANNED HARVEST DATE', 'PLANNED_DE')}
-						#${row('AREA (HA)', 'AREA (HA)')}
+						${row('PROJECTED AGE', 'PROJ_AGE_1')}
+						${row('BEC ZONE', 'BEC_ZONE_C')}
+						${row('BEC SUBZONE', 'BEC_SUBZON')}
+						${row('BEC VARIANT', 'BEC_VARIAN')}
 					</table>
 				</div>`;
-			popup2.setLngLat(e.lngLat).setHTML(html).addTo(map);
+			popup3.setLngLat(e.lngLat).setHTML(html).addTo(map);
 		});
 
 		// ── Consolidated Cutblocks ──
@@ -440,70 +497,64 @@
 			popup1.setLngLat(e.lngLat).setHTML(html).addTo(map);
 		});
 
-		// ── VRI <100 Years ──
-		map.addSource('VRI_100', {
+
+				// ── Add Future Cutblocks ──
+		map.addSource('future_blocks', {
 			type: 'geojson',
-			data: 'Mapbox/VRI_up_to_100.geojson',
+			data: 'Mapbox/Merged_Future_Cutblocks.geojson',
 			generateId: true
 		});
 
 		map.addLayer({
-			id: 'VRI_100-fill',
+			id: 'future_blocks-fill',
 			type: 'fill',
-			source: 'VRI_100',
-			paint: { 
-				'fill-color': 'yellow', 
-				'fill-opacity': 0.5 },
-			layout: { 'visibility': 'none' }
+			source: 'future_blocks',
+			paint: { 'fill-color': '#D62728', 'fill-opacity': 0.45 }
 		});
 
 		map.addLayer({
-			id: 'VRI_100-outline',
+			id: 'future_blocks-outline',
 			type: 'line',
-			source: 'VRI_100',
-			paint: { 
-				'line-color': 'yellow', 
-				'line-width': 1.2, 
-				'line-opacity': 0.9 },
-			layout: { 'visibility': 'none' }
+			source: 'future_blocks',
+			paint: { 'line-color': '#FF1F00', 'line-width': 1.2, 'line-opacity': 0.9 }
 		});
 
 		map.addLayer({
-			id: 'VRI_100-hover',
+			id: 'future_blocks-hover',
 			type: 'fill',
-			source: 'VRI_100',
+			source: 'future_blocks',
 			paint: {
-				'fill-color': 'yellow',
+				'fill-color': '#D62728',
 				'fill-opacity': [
 					'case', ['boolean', ['feature-state', 'hover'], false], 0.15, 0
 				]
 			}
 		});
 
-		let hoveredId4 = null;
+		let hoveredId3 = null;
 
-		map.on('mousemove', 'VRI_100-fill', (e) => {
+		map.on('mousemove', 'future_blocks-fill', (e) => {
 			map.getCanvas().style.cursor = 'pointer';
 			if (e.features.length > 0) {
-				if (hoveredId4 !== null) {
-					map.setFeatureState({ source: 'VRI_100', id: hoveredId4 }, { hover: false });
+				if (hoveredId3 !== null) {
+					map.setFeatureState({ source: 'future_blocks', id: hoveredId3 }, { hover: false });
 				}
-				hoveredId4 = e.features[0].id;
-				map.setFeatureState({ source: 'VRI_100', id: hoveredId4 }, { hover: true });
+				hoveredId3 = e.features[0].id;
+				map.setFeatureState({ source: 'future_blocks', id: hoveredId3 }, { hover: true });
 			}
 		});
 
-		map.on('mouseleave', 'VRI_100-fill', () => {
+		map.on('mouseleave', 'future_blocks-fill', () => {
 			map.getCanvas().style.cursor = '';
-			if (hoveredId4 !== null) {
-				map.setFeatureState({ source: 'VRI_100', id: hoveredId4 }, { hover: false });
+			if (hoveredId3 !== null) {
+				map.setFeatureState({ source: 'future_blocks', id: hoveredId3 }, { hover: false });
 			}
-			hoveredId4 = null;
+			hoveredId3 = null;
 		});
 
-		const popup3 = new mapboxgl.Popup({ closeButton: true, maxWidth: '450px' });
+		const popup2 = new mapboxgl.Popup({ closeButton: true, maxWidth: '450px' });
 
-		map.on('click', 'VRI_100-fill', (e) => {
+		map.on('click', 'future_blocks-fill', (e) => {
 			const props = e.features[0].properties;
 			const row = (label, key) => {
 				const val = props[key];
@@ -514,30 +565,18 @@
 						</tr>`;
 			};
 			const html = `
-				<div class="popup-header"><span class="popup-header-title">Vegetation Resource Inventory</span></div>
+				<div class="popup-header"><span class="popup-header-title">Proposed Cutblock Detail</span></div>
 				<div class="popup-body">
 					<table style="border-collapse:collapse;width:100%;font-size:11px;font-family:var(--font-mono)">
-						${row('PROJECTED AGE', 'PROJ_AGE_1')}
-						${row('BEC ZONE', 'BEC_ZONE_C')}
-						${row('BEC SUBZONE', 'BEC_SUBZON')}
-						${row('BEC VARIANT', 'BEC_VARIAN')}
+						${row('BLOCK ID', 'BLOCK_ID')}
+						${row('LICENSE ID', 'LICENSE_ID')}
+						${row('STATUS', 'LIFECYCLE_')}
+						${row('FSP HOLDER', 'FSP_HOLDER')}
+						${row('PLANNED HARVEST DATE', 'PLANNED_DE')}
+						#${row('AREA (HA)', 'AREA (HA)')}
 					</table>
 				</div>`;
-			popup3.setLngLat(e.lngLat).setHTML(html).addTo(map);
-		});
-
-		// ── Critical Habitat ──
-		map.addSource('Critical_Habitat', {
-			type: 'geojson',
-			data: 'Mapbox/Critical_Habitat.geojson'
-		});
-
-		map.addLayer({
-			id: 'Critical_Habitat-fill',
-			type: 'fill',
-			source: 'Critical_Habitat',
-			paint: { 'fill-color': 'darkblue', 'fill-opacity': 0.5 },
-			layout: { 'visibility': 'none' }
+			popup2.setLngLat(e.lngLat).setHTML(html).addTo(map);
 		});
 
 		//add proposed cutblocks that overlap with TAP priority deferral areas
@@ -555,6 +594,8 @@
 				'fill-opacity': 0.8
 			}
 		});
+
+
 
 		// ── Wire up legend toggles ──
 		// Runs after all layers are added so setLayoutProperty will find each layer
@@ -1553,9 +1594,98 @@
 			type: 'line',
 			source: 'nahmint',
 			layout: {},
-			paint: { 'line-color': 'white', 'line-width': 3 }
+			paint: { 'line-color': 'white', 'line-width': 1.5 }
 		});
 	}); // end load
+
+			// =============================================================================
+		// WELCOME CARD — MAP INSTRUCTIONS
+		// -----------------------------------------------------------------------------
+
+		// Call renderWelcomeCard on page load
+		// Remove this if-block during development to always show the card
+		if (localStorage.getItem('fom-welcome-dismissed') === 'true') {
+			// User opted out — don't show the card
+		} else {
+			renderWelcomeCard();
+		}
+
+		function renderWelcomeCard() {
+
+			const card = document.createElement('div');
+			card.id = 'map-welcome-card';
+			// map-card: dark panel base (map-ui.css)
+			// ui-fade-in: entry animation (map-ui.css)
+			card.className = 'map-card ui-fade-in';
+
+			card.innerHTML = `
+				<!-- Header — click anywhere here to minimize/expand -->
+				<div class="map-card-header" id="wc-header" style="cursor:pointer;" title="Click to expand/minimise">
+					<span class="map-card-title">Map Controls</span>
+					<button class="map-close-btn" id="wc-minimize-btn" aria-label="Minimise instructions"
+						style="font-size:16px;line-height:1;">⌃</button>
+				</div>
+
+				<!-- Body — hidden when is-minimized class applied (CSS above) -->
+				<div class="map-card-body">
+					<p style="font-size:12px;color:var(--ui-text-muted);line-height:1.5;margin-bottom:14px;">
+						Use the controls below to explore the forest data.
+						Click any highlighted block for detailed information.
+					</p>
+
+					<div class="map-section-label">Mouse</div>
+
+					<div class="instruction-row">
+						<div class="keys"><span class="key">Click + Drag</span></div>
+						<span>Pan / move the map</span>
+					</div>
+					<div class="instruction-row">
+						<div class="keys"><span class="key">Scroll</span></div>
+						<span>Zoom in and out</span>
+					</div>
+					<div class="instruction-row">
+						<div class="keys"><span class="key">Dbl Click</span></div>
+						<span>Zoom in to location</span>
+					</div>
+					<div class="instruction-row">
+						<div class="keys">
+							<span class="key">Ctrl</span>
+							<span class="key-sep">+</span>
+							<span class="key">Drag</span>
+						</div>
+						<span>Tilt / change pitch</span>
+					</div>
+					<div class="instruction-row">
+						<div class="keys"><span class="key">Click</span></div>
+						<span>See feature data</span>
+					</div>
+				</div><!-- end .map-card-body -->
+			`;
+
+			document.getElementById('map').appendChild(card);
+
+			// -------------------------------------------------------------------------
+			// MINIMIZE / EXPAND HANDLER
+			// -------------------------------------------------------------------------
+			// IMPORTANT: use card.querySelector() not document.getElementById() —
+			// these elements only exist inside the card, which is now in the DOM above.
+			// -------------------------------------------------------------------------
+			let isMinimized = false;
+			const minimizeBtn = card.querySelector('#wc-minimize-btn');
+			const header = card.querySelector('#wc-header');
+
+			function toggleMinimize() {
+				isMinimized = !isMinimized;
+				card.classList.toggle('is-minimized', isMinimized);
+				// ⌃ = expanded, ⌄ = minimized
+				minimizeBtn.textContent = isMinimized ? '⌄' : '⌃';
+				minimizeBtn.setAttribute('aria-label', isMinimized ? 'Expand instructions' : 'Minimise instructions');
+			}
+
+			header.addEventListener('click', toggleMinimize);
+
+		} // end renderWelcomeCard()
+
 
 </script>
 </body>
