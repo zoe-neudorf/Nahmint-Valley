@@ -171,8 +171,7 @@
         in the Nahmint watershed. The Nahmint valley has some of the largest tracks of remaining unprotected old growth forest on Vancouver Island.
 		In 1990 this was recognized and the area was designated a special management zone to protect local biodivserity.
 		However, in 2019 an investigation was undertaken by the Ministry that found BCTS was failing to comply with old-growth protection standards and that too much of the valley's old growth had already been logged. 
-		Today, blocks continue to be put up for auction in the Nahmint. For more information on the Nahmint please visit the
-		<a href="https://ancientforestalliance.org/our-work/old-growth-campaigns/nahmint-valley/
+		Today, blocks continue to be put up for auction in the Nahmint. 
 " target="_blank" rel="noopener noreferrer">
     Ancient Forest Alliance website
   </a>.
@@ -231,26 +230,17 @@
 	</div>
 
 	<div class="legend-row" data-layers="TAP_Deferral-fill,TAP_Deferral-outline,TAP_Deferral-hover">
-		<span class="legend-swatch" style="background:green;"></span>
+		<span class="legend-swatch" style="background:white;"></span>
 		<span class="legend-label">TAP Deferral Areas</span>
-		<label class="toggle">
-			<input type="checkbox" checked>
-			<span class="slider"></span>
-		</label>
-	</div>
-
-	<div class="legend-row" data-layers="big_trees-fill, big_trees-outline, big_trees-hover">
-		<span class="legend-swatch" style="background:#b85c1a;"></span>
-		<span class="legend-label">Old Growth Type</span>
 		<label class="toggle">
 			<input type="checkbox" unchecked>
 			<span class="slider"></span>
 		</label>
 	</div>
 
-	<div class="legend-row" data-layers="Young_Forests-fill,Young_Forests-outline,Young_Forests-hover">
-		<span class="legend-swatch" style="background:yellow;"></span>
-		<span class="legend-label">Young Forests</span>
+	<div class="legend-row" data-layers="big_trees-fill, big_trees-hover">
+		<span class="legend-swatch" style="background:#b85c1a;"></span>
+		<span class="legend-label">Old Growth Type (Dark=Large, Light=Small)</span>
 		<label class="toggle">
 			<input type="checkbox" unchecked>
 			<span class="slider"></span>
@@ -266,6 +256,23 @@
 		</label>
 	</div>
 
+	<div class="legend-row" data-layers="Young_Forests-fill,Young_Forests-outline,Young_Forests-hover">
+		<span class="legend-swatch" style="background:yellow;"></span>
+		<span class="legend-label">Young Forests</span>
+		<label class="toggle">
+			<input type="checkbox" unchecked>
+			<span class="slider"></span>
+		</label>
+	</div>
+
+	<div class="legend-row" data-layers="CC-fill,CC-outline,VRI-fill">
+		<span class="legend-swatch" style="background:yellow;"></span>
+		<span class="legend-label">Surrounding Young Forests</span>
+		<label class="toggle">
+			<input type="checkbox" unchecked>
+			<span class="slider"></span>
+		</label>
+	</div>
 
 
 <script>
@@ -1283,7 +1290,7 @@
 		map.addImage('diagonal-stripes', stripeImage, { pixelRatio: 3 });
 
 
-		//Add horizontal Green Stripes for OGMA Layer
+		//Add horizontal black Stripes for OGMA Layer
 		const patternCanvas2 = document.createElement('canvas');
 		patternCanvas2.width = 20;
 		patternCanvas2.height = 20;
@@ -1294,7 +1301,7 @@
 		ctx2.fillRect(0, 0, 20, 20);
 
 		// Horizontal stripes
-		ctx2.strokeStyle = 'rgba(0, 0, 0, 1)';
+		ctx2.strokeStyle = 'rgba(0, 0, 0, .51)';
 		ctx2.lineWidth = 2;
 		[[0, 5, 20, 5], [0, 10, 20, 10], [0, 15, 20, 15]].forEach(([x1, y1, x2, y2]) => {
 			ctx2.beginPath();
@@ -1307,6 +1314,61 @@
 			ctx2.getImageData(0, 0, 20, 20).data
 		)};
 		map.addImage('horizontal-stripes', stripeImage2, { pixelRatio: 3 });
+
+		//Stripes for TAP Deferral Area
+		const patternCanvas3 = document.createElement('canvas');
+		patternCanvas3.width = 20;
+		patternCanvas3.height = 20;
+		const ctx3 = patternCanvas3.getContext('2d');
+
+		// Low-opacity red background
+		ctx3.fillStyle = 'rgba(255,255,255,0.10)';
+		ctx3.fillRect(0, 0, 20, 20);
+
+		// Diagonal stripes
+		ctx3.strokeStyle = 'rgba(255,255,255,0.75)';
+		ctx3.lineWidth = 2;
+		[[-5, 5, 5, -5], [0, 20, 20, 0], [15, 25, 25, 15]].forEach(([x1, y1, x2, y2]) => {
+			ctx3.beginPath();
+			ctx3.moveTo(x1, y1);
+			ctx3.lineTo(x2, y2);
+			ctx3.stroke();
+		});
+
+		const stripeImage3 = { width: 20, height: 20, data: new Uint8ClampedArray(
+			ctx3.getImageData(0, 0, 20, 20).data
+		)};
+		map.addImage('white-stripes', stripeImage3, { pixelRatio: 3 });
+
+		//Create a dot grid
+		const size = 13; // 👈 your base density
+
+		const canvas = document.createElement('canvas');
+		canvas.width = size;
+		canvas.height = size;
+
+		const ctx5 = canvas.getContext('2d');
+
+		// style
+		ctx5.fillStyle = 'rgba(255,255,255,0.7)';
+
+		// dot settings
+		const r = 1.2;
+
+		// top row (centered)
+		ctx5.beginPath();
+		ctx5.arc(size / 2, size / 2, r, 0, Math.PI * 2);
+		ctx5.fill();
+
+		// offset dot (bottom-left-ish to create hex feel)
+		ctx5.beginPath();
+		ctx5.arc(0, 0, r, 0, Math.PI * 2);
+		ctx5.fill();
+
+		// convert to image
+		const imageData = ctx5.getImageData(0, 0, size, size);
+
+		map.addImage('dot-grid2', imageData, { pixelRatio: 2 });
 
 		// ── Critical Habitat ──
 		map.addSource('Critical_Habitat', {
@@ -1322,6 +1384,19 @@
 			layout: { 'visibility': 'none' }
 		});
 
+		map.addSource('TAP_Areas_Logged_Since_2021', {
+			type: 'geojson',
+			data: 'Mapbox/Logged_TAP_Since_2021.geojson'
+		});
+
+		map.addLayer({
+			id: 'TAP_Areas_Logged_Since_2021-fill',
+			type: 'fill',
+			source: 'TAP_Areas_Logged_Since_2021',
+			paint: { 'fill-color': 'purple',
+				'fill-opacity': 1.0 }
+		});
+
 		// ── VRI <100 Years & Consolidated Cutblocks ──
 		map.addSource('Young_Forests', {
 			type: 'geojson',
@@ -1335,7 +1410,7 @@
 			source: 'Young_Forests',
 			paint: { 
 				'fill-color': 'yellow', 
-				'fill-opacity': 0.15 },
+				'fill-opacity': 0.35 },
 			layout: { 'visibility': 'none' }
 		});
 
@@ -1346,7 +1421,7 @@
 			paint: { 
 				'line-color': 'yellow', 
 				'line-width': 1.0, 
-				'line-opacity': 0.7 },
+				'line-opacity': 1.0 },
 			layout: { 'visibility': 'none' }
 		});
 
@@ -1422,8 +1497,9 @@
 			type: 'fill',
 			source: 'TAP_Deferral',
 			paint: { 
-				'fill-color': 'green', 
-				'fill-opacity': 0.5 }
+				'fill-pattern': 'dot-grid2', 
+			},
+				layout: { 'visibility': 'none' }
 		});
 
 		map.addLayer({
@@ -1431,9 +1507,10 @@
 			type: 'line',
 			source: 'TAP_Deferral',
 			paint: { 
-				'line-color': '#a8c5a0', 
-				'line-width': .5, 
-				'line-opacity': 0.9 }
+				'line-color': '#ffffff', //was a8c5a0
+				'line-width': .7, 
+				'line-opacity': 0.7 },
+				layout: { 'visibility': 'none' }	
 		});
 
 		map.addLayer({
@@ -1441,7 +1518,7 @@
 			type: 'fill',
 			source: 'TAP_Deferral',
 			paint: {
-				'fill-color': '#4a7c59',
+				'fill-color': '#ffffff',
 				'fill-opacity': [
 					'case', ['boolean', ['feature-state', 'hover'], false], 0.15, 0
 				]
@@ -1512,6 +1589,7 @@
 					'Large', '#b85c1a',
 					'Medium', '#d4813a',
 					'Small', '#f0c080',
+					'Very Small', '#fde8c8',
 				 	'transparent'
 				],
 				'fill-opacity': .5 },
@@ -1530,6 +1608,7 @@
 					'Large', '#b85c1a',
 					'Medium', '#d4813a',
 					'Small', '#f0c080',
+					'Very Small', '#fde8c8',
 				 	'transparent'
 				],
 				'fill-opacity': [
@@ -1764,7 +1843,7 @@
 					paint: {
 						'line-color': 'black',
 						'line-width': .7,
-						'line-opacity': 1.0
+						'line-opacity': .75
 					},
 					layout: { 'visibility': 'none' }	
 				});
@@ -1838,7 +1917,51 @@
 				});
 
 			})(); // end OGMA cutblocks async block
-	});
+
+				map.addSource('CC', {
+				type: 'geojson',
+				data: 'Mapbox/Near_CC.geojson',        // <-- only features inside the boundary
+				generateId: true
+				});
+				// Fill layer — semi-transparent polygon interior
+				map.addLayer({
+					id: 'CC-fill',
+					type: 'fill',
+					source: 'CC',
+					paint: {
+						'fill-color': 'yellow',
+						'fill-opacity': 0.35,
+					},
+					layout: { 'visibility': 'none' }
+				});
+
+				map.addSource('VRI', {
+					type: 'geojson',
+					data: 'Mapbox/Surrounding_VRI.geojson',  // <-- only features inside the boundary
+					generateId: true
+				});
+
+				// Fill layer — semi-transparent polygon interior
+				map.addLayer({
+					id: 'VRI-fill',
+					type: 'fill',
+					source: 'VRI',
+					paint: {'fill-color':[
+						'match',
+						['get', 'PROJ_AGE_CLASS_CD_1'],
+						'1', 'yellow',
+						'2', 'yellow',
+						'3', 'yellow',
+						'4', 'yellow',
+						'5', 'yellow',
+						'transparent'
+					],
+						'fill-opacity': 0.35,
+					},
+					layout: { 'visibility': 'none' }	
+				});
+
+	}); // end map.on('load')
 
 		// ── Wire up legend toggles ──
 		// Runs after all layers are added so setLayoutProperty will find each layer
@@ -1859,6 +1982,7 @@
 				row.classList.toggle('is-off', !checkbox.checked);
 			});
 		});
+
 
 		// =============================================================================
 		// WELCOME CARD — MAP INSTRUCTIONS
