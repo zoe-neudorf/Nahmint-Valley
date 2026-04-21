@@ -176,13 +176,13 @@
 
 		<div class="map-section-label">Included Layers</div>
 		<p class="welcome-text">
-			<span style="color:red; font-weight:600;">Red</span> polygons indicate areas where logging is proposed to take place.
-			<span style="color:#eb0e96; font-weight:600;">Pink</span> polygons have been created to highlight areas where proposed cutblocks are placed in TAP Priority Deferral areas.
-			Old Growth Management Areas are shown using <span style="color:grey; font-weight:600;">Black Horizontal Lines</span>. These are areas where logging is prevented or restrained. 
-			<span style="color:green; font-weight:600;">Green</span> polygons are areas that the Technical Advisory Panel (TAP) has identified as Priority Deferral Areas.
-			<span style="color:#b85c1a; font-weight:600;">Brown</span> polygons show small (lighter) to large (darker) old growth stands. 
-			The <span style="color:yellow; font-weight:600;">Yellow</span> previously logged layer shows polygons from the Consolidated Cutblocks dataset, and carefully selected VRI data under 100 years of age. 
-			Critical Habitat for federally listed species at risk is identified in <span style="color:#1a6ea8; font-weight:600;">Blue</span>.
+			<span style="color:red; font-weight:600;">RED</span> polygons indicate areas where logging is proposed to take place.
+			<span style="color:#eb0e96; font-weight:600;">PINK</span> polygons have been created to highlight areas where proposed cutblocks are placed in TAP Priority Deferral areas.
+			Old Growth Management Areas are shown using <span style="color:rgb(144, 141, 141); font-weight:600;">BLACK</span> horizontal lines. These are areas where logging is prevented or restrained. 
+			<span style="color:rgb(252, 250, 250); font-weight:600;">WHITE</span> polygons are areas that the Technical Advisory Panel (TAP) has identified as Priority Deferral Areas.
+			<span style="color:#b85c1a; font-weight:600;">BROWN</span> polygons show small (lighter) to large (darker) old growth stands. 
+			The <span style="color:yellow; font-weight:600;">YELLOW</span> previously logged layer shows polygons from the Consolidated Cutblocks dataset, and carefully selected VRI data under 100 years of age. 
+			Critical Habitat for federally listed species at risk is identified in <span style="color:#1a6ea8; font-weight:600;">BLUE</span>.
 			For more information click on your polygon of interest and toggle layers on and off using the legend. 
 		</p>
 
@@ -203,7 +203,7 @@
 		<span class="legend-swatch" style="background:red;"></span>
 		<span class="legend-label">Proposed Logging</span>
 		<label class="toggle">
-			<input type="checkbox" checked>
+			<input type="checkbox" >
 			<span class="slider"></span>
 		</label>
 	</div>
@@ -212,7 +212,7 @@
 		<span class="legend-swatch" style="background:#eb0e96;"></span>
 		<span class="legend-label">Proposed Cutblocks in TAP Deferral Areas</span>
 		<label class="toggle">
-			<input type="checkbox" checked>
+			<input type="checkbox" >
 			<span class="slider"></span>
 		</label>
 	</div>
@@ -221,7 +221,7 @@
 		<span class="legend-swatch" style="background:grey;"></span>
 		<span class="legend-label">Old Growth Management Areas</span>
 		<label class="toggle">
-			<input type="checkbox" unchecked>
+			<input type="checkbox" >
 			<span class="slider"></span>
 		</label>
 	</div>
@@ -230,7 +230,7 @@
 		<span class="legend-swatch" style="background:white;"></span>
 		<span class="legend-label">TAP Deferral Areas</span>
 		<label class="toggle">
-			<input type="checkbox" unchecked>
+			<input type="checkbox" >
 			<span class="slider"></span>
 		</label>
 	</div>
@@ -239,7 +239,7 @@
 		<span class="legend-swatch" style="background:#b85c1a;"></span>
 		<span class="legend-label">TAP Selected Old Growth (Dark=L, Light=S)</span>
 		<label class="toggle">
-			<input type="checkbox" unchecked>
+			<input type="checkbox" >
 			<span class="slider"></span>
 		</label>
 	</div>
@@ -248,7 +248,7 @@
 		<span class="legend-swatch" style="background:#1a6ea8;"></span>
 		<span class="legend-label">Critical Habitat</span>
 		<label class="toggle">
-			<input type="checkbox" unchecked>
+			<input type="checkbox" >
 			<span class="slider"></span>
 		</label>
 	</div>
@@ -257,16 +257,16 @@
 		<span class="legend-swatch" style="background:yellow;"></span>
 		<span class="legend-label">Young Forests</span>
 		<label class="toggle">
-			<input type="checkbox" unchecked>
+			<input type="checkbox" >
 			<span class="slider"></span>
 		</label>
 	</div>
 
-	<div class="legend-row" data-layers="CC-fill,CC-outline,VRI-fill">
+	<div class="legend-row" data-layers="CC-fill,VRI-fill">
 		<span class="legend-swatch" style="background:yellow;"></span>
 		<span class="legend-label">Young Forests (Surrounding Area)</span>
 		<label class="toggle">
-			<input type="checkbox" unchecked>
+			<input type="checkbox" >
 			<span class="slider"></span>
 		</label>
 	</div>
@@ -1659,106 +1659,6 @@
 			popup1.setLngLat(e.lngLat).setHTML(html).addTo(map);
 		});
 
-		//add proposed cutblocks that overlap with TAP priority deferral areas
-		map.addSource('Proposed Cutblocks in TAP Deferral Areas', {
-			type: 'geojson',
-			data: 'Mapbox/FC_TAP_PRI.geojson'
-		});
-		
-		map.addLayer({
-			id: 'Proposed Cutblocks in TAP Deferral Areas',
-			type: 'fill',
-			source: 'Proposed Cutblocks in TAP Deferral Areas',
-			paint: {
-				'fill-color': '#eb0e96',
-				'fill-opacity': 0.35
-			}
-		});
-		
-
-		// ── Add Future Cutblocks ──
-		map.addSource('future_blocks', {
-			type: 'geojson',
-			data: 'Mapbox/Merged_Future_Cutblocks.geojson',
-			generateId: true
-		});
-
-		map.addLayer({
-			id: 'future_blocks-fill',
-			type: 'fill',
-			source: 'future_blocks',
-			paint: { 
-				'fill-pattern': 'diagonal-stripes', 
-			 }
-		});
-
-		map.addLayer({
-			id: 'future_blocks-outline',
-			type: 'line',
-			source: 'future_blocks',
-			paint: { 'line-color': 'red', 'line-width': .7, 'line-opacity': 0.9 }
-		});
-
-		map.addLayer({
-			id: 'future_blocks-hover',
-			type: 'fill',
-			source: 'future_blocks',
-			paint: {
-				'fill-color': 'red',
-				'fill-opacity': [
-					'case', ['boolean', ['feature-state', 'hover'], false], 0.15, 0
-				]
-			}
-		});
-
-		let hoveredId3 = null;
-
-		map.on('mousemove', 'future_blocks-fill', (e) => {
-			map.getCanvas().style.cursor = 'pointer';
-			if (e.features.length > 0) {
-				if (hoveredId3 !== null) {
-					map.setFeatureState({ source: 'future_blocks', id: hoveredId3 }, { hover: false });
-				}
-				hoveredId3 = e.features[0].id;
-				map.setFeatureState({ source: 'future_blocks', id: hoveredId3 }, { hover: true });
-			}
-		});
-
-		map.on('mouseleave', 'future_blocks-fill', () => {
-			map.getCanvas().style.cursor = '';
-			if (hoveredId3 !== null) {
-				map.setFeatureState({ source: 'future_blocks', id: hoveredId3 }, { hover: false });
-			}
-			hoveredId3 = null;
-		});
-
-		const popup2 = new mapboxgl.Popup({ closeButton: true, maxWidth: '450px' });
-
-		map.on('click', 'future_blocks-fill', (e) => {
-			const props = e.features[0].properties;
-			const row = (label, key) => {
-				const val = props[key];
-				if (val == null || val === '' || val === 'null') return '';
-				return `<tr>
-							<td class="popup-label" style="padding:3px 8px 3px 0">${label}</td>
-							<td class="popup-value" style="padding:3px 0">${val}</td>
-						</tr>`;
-			};
-			const html = `
-				<div class="popup-header"><span class="popup-header-title">Proposed Cutblock Details</span></div>
-				<div class="popup-body">
-					<table style="border-collapse:collapse;width:100%;font-size:11px;font-family:var(--font-mono)">
-						${row('BLOCK ID', 'BLOCK_ID')}
-						${row('LICENSE ID', 'LICENSE_ID')}
-						${row('STATUS', 'LIFECYCLE_')}
-						${row('FSP HOLDER', 'FSP_HOLDER')}
-						${row('PLANNED HARVEST DATE', 'PLANNED_DE')}
-						#${row('AREA (HA)', 'AREA (HA)')}
-					</table>
-				</div>`;
-			popup2.setLngLat(e.lngLat).setHTML(html).addTo(map);
-		});
-
 		map.addSource('nahmint', {
 			type:'geojson',
 			data:nahmintPolygon
@@ -1780,8 +1680,145 @@
 				paint: { 'line-color': 'white', 'line-width': 1.5 }
 			}); 
 
+
+			//add proposed cutblocks that overlap with TAP priority deferral areas
+			map.addSource('Proposed Cutblocks in TAP Deferral Areas', {
+				type: 'geojson',
+				data: 'Mapbox/FC_TAP_PRI.geojson'
+			});
+		
+			map.addLayer({
+				id: 'Proposed Cutblocks in TAP Deferral Areas',
+				type: 'fill',
+				source: 'Proposed Cutblocks in TAP Deferral Areas',
+				paint: {
+					'fill-color': '#eb0e96',
+					'fill-opacity': 0.35
+				},
+				layout:{'visibility': 'none'}
+			});
+		
+
+		// ── Add Future Cutblocks ──
+			const WFS_URL2 =
+				'https://openmaps.gov.bc.ca/geo/ows?' +
+				'SERVICE=WFS' +
+				'&VERSION=2.0.0' +
+				'&REQUEST=GetFeature' +
+				'&TYPENAMES=pub:WHSE_FOREST_TENURE.FOM_CUTBLOCK_SP' +
+				'&OUTPUTFORMAT=application/json' +
+				'&SRSNAME=EPSG:4326' +
+				'&BBOX=-125.375977,49.012654,-124.833527,49.275869,EPSG:4326';
+
+			// Format: &BBOX=minLng,minLat,maxLng,maxLat,EPSG:4326
+			(async () => {
+				let geojson1;
+				try {
+				const response = await fetch(WFS_URL2);
+				if (!response.ok) throw new Error(`WFS request failed — HTTP ${response.status}`);
+				geojson1 = await response.json();
+				console.log(`Future Cutblocks loaded: ${geojson1.features?.length ?? 0} features`);
+				} catch (err) {
+				console.error('Could not load Future Cutblocks features from BC WFS:', err);
+				return;
+				}
+
+				// Filter to only features that intersect the Nahmint polygon
+				const clipped1 = {
+				...geojson1,
+				features: geojson1.features.filter(f =>
+					turf.booleanIntersects(f, nahmintPolygon)
+					)
+				};
+				console.log(`Cutblocks within Nahmint: ${clipped1.features.length}`);
+		
+				map.addSource('future_blocks', {
+					type: 'geojson',
+					data: clipped1,        // <-- only features inside the boundary
+					generateId: true
+				});
+
+				map.addLayer({
+					id: 'future_blocks-fill',
+					type: 'fill',
+					source: 'future_blocks',
+					paint: { 
+						'fill-pattern': 'diagonal-stripes', 
+					},
+					layout:{'visibility': 'none'}
+				});
+
+				map.addLayer({
+					id: 'future_blocks-outline',
+					type: 'line',
+					source: 'future_blocks',
+					paint: { 'line-color': 'red', 'line-width': .7, 'line-opacity': 0.9 },
+					layout: {'visibility': 'none'}
+				});
+
+				map.addLayer({
+					id: 'future_blocks-hover',
+					type: 'fill',
+					source: 'future_blocks',
+					paint: {
+						'fill-color': 'red',
+						'fill-opacity': [
+							'case', ['boolean', ['feature-state', 'hover'], false], 0.15, 0
+						]
+					}
+				});
+
+				let hoveredId3 = null;
+
+				map.on('mousemove', 'future_blocks-fill', (e) => {
+					map.getCanvas().style.cursor = 'pointer';
+					if (e.features.length > 0) {
+						if (hoveredId3 !== null) {
+							map.setFeatureState({ source: 'future_blocks', id: hoveredId3 }, { hover: false });
+						}
+						hoveredId3 = e.features[0].id;
+						map.setFeatureState({ source: 'future_blocks', id: hoveredId3 }, { hover: true });
+					}
+				});
+
+				map.on('mouseleave', 'future_blocks-fill', () => {
+					map.getCanvas().style.cursor = '';
+					if (hoveredId3 !== null) {
+						map.setFeatureState({ source: 'future_blocks', id: hoveredId3 }, { hover: false });
+					}
+					hoveredId3 = null;
+				});
+
+				const popup2 = new mapboxgl.Popup({ closeButton: true, maxWidth: '450px' });
+
+				map.on('click', 'future_blocks-fill', (e) => {
+					const props = e.features[0].properties;
+					const row = (label, key) => {
+						const val = props[key];
+						if (val == null || val === '' || val === 'null') return '';
+						return `<tr>
+									<td class="popup-label" style="padding:3px 8px 3px 0">${label}</td>
+									<td class="popup-value" style="padding:3px 0">${val}</td>
+								</tr>`;
+					};
+					const html = `
+						<div class="popup-header"><span class="popup-header-title">Proposed Cutblock Details</span></div>
+						<div class="popup-body">
+							<table style="border-collapse:collapse;width:100%;font-size:11px;font-family:var(--font-mono)">
+								${row('BLOCK ID', 'BLOCK_ID')}
+								${row('LICENSE ID', 'LICENSE_ID')}
+								${row('STATUS', 'LIFECYCLE_')}
+								${row('FSP HOLDER', 'FSP_HOLDER')}
+								${row('PLANNED HARVEST DATE', 'PLANNED_DE')}
+								#${row('AREA (HA)', 'AREA (HA)')}
+							</table>
+						</div>`;
+					popup2.setLngLat(e.lngLat).setHTML(html).addTo(map);
+				});
+			})();
+
 		//-----------------------------------------------------------------------------
-		//FOM CUTBLOCKS — WFS REQUEST URL
+		//OGMA — WFS REQUEST URL
 		// -----------------------------------------------------------------------------
 			const WFS_URL =
 				'https://openmaps.gov.bc.ca/geo/ows?' +
@@ -1845,20 +1882,20 @@
 					layout: { 'visibility': 'none' }	
 				});
 
-			map.addLayer({
-					id: 'OGMA-hover',
-					type: 'fill',
-					source: 'OGMA',
-					paint: {
-						'fill-color': 'black',
-						'fill-opacity': [
-							'case',
-							['boolean', ['feature-state', 'hover'], false],
-							0.15,   // opacity when hovered
-							0       // opacity when not hovered
-						]
-					}
-				});
+				map.addLayer({
+						id: 'OGMA-hover',
+						type: 'fill',
+						source: 'OGMA',
+						paint: {
+							'fill-color': 'black',
+							'fill-opacity': [
+								'case',
+								['boolean', ['feature-state', 'hover'], false],
+								0.15,   // opacity when hovered
+								0       // opacity when not hovered
+							]
+						}
+					});
 
 				// Track which feature is currently hovered
 				let hoveredFomId = null;
