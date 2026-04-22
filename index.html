@@ -1805,12 +1805,12 @@
 						<div class="popup-header"><span class="popup-header-title">Proposed Cutblock Details</span></div>
 						<div class="popup-body">
 							<table style="border-collapse:collapse;width:100%;font-size:11px;font-family:var(--font-mono)">
-								${row('BLOCK ID', 'BLOCK_ID')}
-								${row('LICENSE ID', 'LICENSE_ID')}
-								${row('STATUS', 'LIFECYCLE_')}
-								${row('FSP HOLDER', 'FSP_HOLDER')}
-								${row('PLANNED HARVEST DATE', 'PLANNED_DE')}
-								#${row('AREA (HA)', 'AREA (HA)')}
+							${row('BLOCK ID', 'CUT_BLOCK_ID')}
+							${row('LICENSE ID', 'LICENSE_ID')}
+							${row('STATUS', 'LIFECYCLE_STATUS')}
+							${row('FSP HOLDER', 'FSP_HOLDER_NAME')}
+							${row('PLANNED HARVEST DATE', 'PLANNED_DEVELOPMENT_DATE')}
+							${row('AREA (SQM)', 'FEATURE_AREA_SQM')}
 							</table>
 						</div>`;
 					popup2.setLngLat(e.lngLat).setHTML(html).addTo(map);
